@@ -1,0 +1,30 @@
+body {
+  overflow: hidden;
+}
+
+.is-display {
+  display: block;
+}
+
+.on-display {
+  display: none;
+}
+
+a {
+  cursor: pointer;
+}
+
+.mn-ul-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.mn-ul-navigation li {
+  font-size: 25px;
+  font-weight: 600;
+  cursor: pointer;
+}

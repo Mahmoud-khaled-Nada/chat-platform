@@ -9,6 +9,10 @@ class Participant extends Pivot
 {
     use HasFactory;
 
+    protected $fillable = [
+        'conversation_id', 'user_id', 'role', 'joined_at'
+    ];
+
     public $timestamps = false;
 
     protected $casts = ['joined_at' => 'datetime'];

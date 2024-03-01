@@ -10,6 +10,10 @@ class Recipient extends Pivot
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'user_id', 'message_id', 'read_at', 'joined_at'
+    ];
+
     public $timestamps = false;
 
     protected $casts = ['read_at' => 'datetime'];

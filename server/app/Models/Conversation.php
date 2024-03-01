@@ -9,9 +9,10 @@ class Conversation extends Model
 {
     use HasFactory;
 
-    protected $fillabla = [
+    protected $fillable = [
         'user_id', 'label', 'type', 'last_message_id'
     ];
+    
 
     public function participants()
     {

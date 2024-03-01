@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageCreated;
 use App\Models\Conversation;
 use App\Models\Recipient;
 use Illuminate\Http\Request;
@@ -25,23 +26,7 @@ class MessagesController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'message' => ['required', 'string'],
-            'conversation_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return !$request->input('user_id');
-                }),
-                'int',
-                'exists:conversations,id'
-            ],
-            'user_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return !$request->input('conversation_id');
-                }),
-                'int',
-                'exists:users,id'
-            ],
-        ]);
+        $this->validationsOfMessage($request);
 
         $user = Auth::user();
         $conversation_id =  $request->post('conversation_id');
@@ -66,14 +51,7 @@ class MessagesController extends Controller
                     })->first();
 
                 if (!$conversation) {
-                    $conversation = Conversation::create([
-                        'user_id' => $user->id,
-                        'type' => 'peer',
-                    ]);
-
-                    $conversation->participants()->attach([
-                        $user->id, $user_id
-                    ]);
+                    $this->createConversations($user, $user_id);
                 }
             }
             $message = $conversation->messages()->create([
@@ -82,18 +60,25 @@ class MessagesController extends Controller
             ]);
 
 
-            DB::statement('
+            DB::statement(
+                '
                 INSERT INTO recipients (user_id, message_id)
                 SELECT user_id, ? FROM participants
                 WHERE conversation_id = ?
-            ', $message->id, $conversation->id);
+                ',
+                [$message->id, $conversation->id]
+            );
+            $conversation->update([
+                'last_message_id' => $message->id
+            ]);
 
             DB::commit();
+
+            broadcast(new MessageCreated($message));
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
         }
-
         return $message;
     }
 
@@ -113,6 +98,39 @@ class MessagesController extends Controller
             'message' => 'deleted!'
         ];
     }
+
+
+    private function validationsOfMessage($request)
+    {
+        $request->validate([
+            'message' => ['required', 'string'],
+            'conversation_id' => [
+                Rule::requiredIf(function () use ($request) {
+                    return !$request->input('user_id');
+                }),
+                'int',
+                'exists:conversations,id'
+            ],
+            'user_id' => [
+                Rule::requiredIf(function () use ($request) {
+                    return !$request->input('conversation_id');
+                }),
+                'int',
+                'exists:users,id'
+            ],
+        ]);
+    }
+
+    private function createConversations($user, $user_id)
+    {
+        $conversation = Conversation::create([
+            'user_id' => $user->id,
+            'type' => 'peer',
+        ]);
+
+        $conversation->participants()->attach([
+            $user->id => ['joined_at' => now()],
+            $user_id => ['joined_at' => now()]
+        ]);
+    }
 }
-
-

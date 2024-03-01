@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('message_id')
                 ->constrained('messages')
                 ->cascadeOnDelete();
-            $table->timestamp('read_at');
+            $table->timestamp('read_at')->nullable();
             $table->softDeletes();
             $table->primary(['user_id', 'message_id']);
         });

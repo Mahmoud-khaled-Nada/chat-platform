@@ -25,9 +25,9 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/conversations', [ConversationsController::class, 'index']);
-    Route::get('/conversations/{conversations}', [ConversationsController::class, 'show']);
-    Route::post('/conversations/{conversations}/participants', [ConversationsController::class, 'addParticipant']);
-    Route::delete('/conversations/{conversations}/participants', [ConversationsController::class, 'removeParticipant']);
+    Route::get('/conversations/{conversation}', [ConversationsController::class, 'show']);
+    Route::post('/conversations/{conversation}/participants', [ConversationsController::class, 'addParticipant']);
+    Route::delete('/conversations/{conversation}/participants', [ConversationsController::class, 'removeParticipant']);
     Route::get('/conversations/{id}/message', [MessagesController::class, 'index']);
     Route::post('/message', [MessagesController::class, 'store']);
     Route::delete('/message/{id}', [MessagesController::class, 'destroy']);

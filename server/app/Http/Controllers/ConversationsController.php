@@ -25,12 +25,14 @@ class ConversationsController extends Controller
         return $conversation->load('participants');
     }
 
+
     public function addParticipant(Request $request, Conversation $conversation)
     {
         $request->validate([
             'user_id' => ['required', 'int', 'exists:users,id']
         ]);
-        $conversation->participants()->attach($request->post('user_id'),[
+
+        $conversation->participants()->attach($request->post('user_id'), [
             'joined_at' => Carbon::now()
         ]);
     }

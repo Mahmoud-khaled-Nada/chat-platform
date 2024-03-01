@@ -39,20 +39,20 @@ class MessagesController extends Controller
                 $conversation = $user->conversations()->findOrFail($conversation_id);
             } else {
                 $conversation = Conversation::where('type', '=', 'peer')
-                    ->whereHas('participants', function ($builder) use ($user_id, $user) {
-                        $builder->join(
-                            'participants as participants2',
-                            'participants2.conversation_id',
-                            '=',
-                            'participants.conversation_id'
-                        )
-                            ->where('participants.user_id', '=', $user_id)
-                            ->where('participants2.user_id', '=', $user->id);
-                    })->first();
-
-                if (!$conversation) {
-                    $this->createConversations($user, $user_id);
-                }
+                ->whereHas('participants', function ($builder) use ($user_id, $user) {
+                    $builder->join(
+                        'participants as participants2',
+                        'participants2.conversation_id',
+                        '=',
+                        'participants.conversation_id'
+                    )
+                        ->where('participants.user_id', '=', $user_id)
+                        ->where('participants2.user_id', '=', $user->id);
+                })->first();
+        
+            if (!$conversation) {
+                $this->createConversations($user, $user_id);
+            }
             }
             $message = $conversation->messages()->create([
                 'user_id' => $user->id,
@@ -60,14 +60,8 @@ class MessagesController extends Controller
             ]);
 
 
-            DB::statement(
-                '
-                INSERT INTO recipients (user_id, message_id)
-                SELECT user_id, ? FROM participants
-                WHERE conversation_id = ?
-                ',
-                [$message->id, $conversation->id]
-            );
+            $this->insertRecipients($message, $conversation);
+
             $conversation->update([
                 'last_message_id' => $message->id
             ]);
@@ -132,5 +126,15 @@ class MessagesController extends Controller
             $user->id => ['joined_at' => now()],
             $user_id => ['joined_at' => now()]
         ]);
+    }
+
+    // Insert recipients for the message
+    private function insertRecipients($message, $conversation)
+    {
+        DB::statement('
+                INSERT INTO recipients (user_id, message_id)
+                SELECT user_id, ? FROM participants
+                WHERE conversation_id = ?
+            ', [$message->id, $conversation->id]);
     }
 }

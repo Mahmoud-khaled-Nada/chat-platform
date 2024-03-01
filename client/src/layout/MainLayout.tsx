@@ -1,16 +1,13 @@
 // import Navigation from "./components/Navigation";
-import Sidebar from "./@components/Sidebar";
-import Chat from "./@components/Chat";
-import ChatInfo from "./@components/ChatInfo";
+import Sidebar from "./@components/sidebar-content/Sidebar";
+import Chat from "./@components/sidebar-content/Chat";
+import ChatInfo from "./@components/sidebar-content/ChatInfo";
 
 export const MainLayout = () => {
   return (
     <>
       {/* Layout */}
       <div className="layout overflow-hidden">
-        {/* Navigation */}
-        {/* <Navigation /> */}
-        {/* Sidebar */}
         <Sidebar />
         {/* Chat */}
         <Chat />

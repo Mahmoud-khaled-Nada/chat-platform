@@ -10,7 +10,9 @@ const ModalMediaPreview: FC<Props> = ({
   setShowModalMediaPreview,
 }) => {
   return (
-    <div className="modal fade" id="modal-media-preview" >
+    <div
+      className={`modal fade ${showModalMediaPreview ? "show is-display" : ""}`}
+    >
       <div className="modal-dialog modal-xl modal-dialog-centered modal-fullscreen-xl-down">
         <div className="modal-content">
           {/* Modal: Header */}
@@ -18,8 +20,7 @@ const ModalMediaPreview: FC<Props> = ({
             <button
               type="button"
               className="btn-close btn-close-arrow"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+              onClick={() => setShowModalMediaPreview(false)}
             ></button>
 
             <div>

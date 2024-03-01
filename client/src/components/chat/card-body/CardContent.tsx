@@ -1,4 +1,3 @@
-import React from "react";
 import MessageInner from "./messages/MessageInner";
 import MessageOut from "./messages/MessageOut";
 import MessageDivider from "./messages/MessageDivider";

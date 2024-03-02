@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConversationsController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\MessengerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/friends' , [MessengerController::class, 'friends']);
+    Route::get('/chats' , [MessengerController::class, 'chats']);
+    //
     Route::get('/conversations', [ConversationsController::class, 'index']);
     Route::get('/conversations/{conversation}', [ConversationsController::class, 'show']);
     Route::post('/conversations/{conversation}/participants', [ConversationsController::class, 'addParticipant']);

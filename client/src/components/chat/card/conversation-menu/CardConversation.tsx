@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import DropdownMenu from "./DropdownMenu";
+import { FiMoreVertical } from "react-icons/fi";
 
-const CardConversation = () => {
+interface Props {
+  id?: string;
+  name: string;
+}
+const CardConversation: FC<Props> = ({name}) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   return (
     <>
@@ -25,7 +30,7 @@ const CardConversation = () => {
 
             <div className="col">
               <h5>
-                <a href="#">Damian Binder</a>
+                <a>{name}</a>
               </h5>
               <p>last seen within a week</p>
             </div>
@@ -38,22 +43,7 @@ const CardConversation = () => {
                   className={`icon text-muted ${openMenu ? "show" : ""}`}
                   role="button"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    className="feather feather-more-vertical"
-                  >
-                    <circle cx="12" cy="12" r="1"></circle>
-                    <circle cx="12" cy="5" r="1"></circle>
-                    <circle cx="12" cy="19" r="1"></circle>
-                  </svg>
+                  <FiMoreVertical className="feather feather-more-vertical" />
                 </a>
                 <DropdownMenu openMenu={openMenu} />
               </div>

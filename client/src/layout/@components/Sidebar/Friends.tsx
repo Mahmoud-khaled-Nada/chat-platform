@@ -1,19 +1,27 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import ModalInvite from "../../../components/chat/models/ModalInvite";
 import CardConversation from "../../../components/chat/card/conversation-menu/CardConversation";
 import Search from "./Chats/Search";
 import { IoPersonAddOutline } from "react-icons/io5";
-
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
+import { fetchFriendsThunk } from "../../../store/friends/friendsThunk";
+import { getFriendsUser } from "../../../utils/api";
 
 interface Props {
   isActive: boolean;
 }
 const Friends: FC<Props> = ({ isActive }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const friends = useSelector((state: RootState) => state.friends.data);
   const [findFriendOpen, setFindFriendOpen] = useState<boolean>(false);
-
   const handelFindFriendOpen = () => {
     setFindFriendOpen(true);
   };
+
+  useEffect(() => {
+    dispatch(fetchFriendsThunk());
+  }, []);
   return (
     <div className={`tab-pane fade h-100 ${isActive ? "show active" : ""}`}>
       <div className="d-flex flex-column h-100">
@@ -46,9 +54,11 @@ const Friends: FC<Props> = ({ isActive }) => {
             {/* List */}
             <div className="card-list">
               {/* Card */}
-              <CardConversation />
-              <CardConversation />
-              <CardConversation />
+              {friends.map((row) => (
+                <div key={row.id}>
+                  <CardConversation name={row.name} />
+                </div>
+              ))}
             </div>
           </div>
         </div>

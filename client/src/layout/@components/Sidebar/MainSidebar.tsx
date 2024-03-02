@@ -20,24 +20,18 @@ const MainSidebar = () => {
     setChats(true);
     setFriends(false);
     setNotifications(false);
-    // setSettings(false);
-    // setSupport(false);
   };
 
   const handleFriendsClick = () => {
     setChats(false);
     setFriends(true);
     setNotifications(false);
-    // setSettings(false);
-    // setSupport(false);
   };
 
   const handleNotificationsClick = () => {
     setChats(false);
     setFriends(false);
     setNotifications(true);
-    // setSettings(false);
-    // setSupport(false);
   };
 
   return (
